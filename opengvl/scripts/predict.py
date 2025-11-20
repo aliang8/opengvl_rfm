@@ -52,6 +52,7 @@ def main(config: DictConfig) -> None:
     starting_time = datetime.now().isoformat().replace(':', '-')
     jsonl_path = output_dir / f"{model_name_safe}_{starting_time}_predictions.jsonl"
     sampling_method = config.sampling_method
+    anchoring = config.anchoring
 
     examples = infer_utils.load_fewshot_examples(data_loader, num_examples, config.dataset.name)
     logger.info(f"Loaded {len(examples)} (in-context trajectories (0 or more) + eval trajectory) examples for prediction")
@@ -93,11 +94,14 @@ def main(config: DictConfig) -> None:
     summary = dict()
     summary['model_name'] = client.model_name
     summary['dataset_name'] = config.dataset.name
+    summary['num_context_episodes'] = config.dataset.num_context_episodes
     summary['prediction_time'] = starting_time
     summary['temperature'] = float(config.prediction.get("temperature", 1.0))
     summary['num_examples'] = len(records)
     summary['sampling'] = sampling_method
     summary['metrics'] = dataset_metrics.to_dict()
+    summary['prompt_type'] = config.prompts.name
+    summary['anchoring'] = anchoring
 
     with (output_dir / f"{model_name_safe}_{starting_time}_summary.json").open("w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)

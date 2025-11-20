@@ -29,6 +29,7 @@ class HuggingFaceDataLoader(BaseDataLoader):
         seed: int = 42,
         max_episodes: int | None = None,
         sampling_method: str = 'random',
+        anchoring: str = 'first',
     ) -> None:
         super().__init__(
             num_frames=num_frames,
@@ -44,6 +45,7 @@ class HuggingFaceDataLoader(BaseDataLoader):
         self._all_episodes_indices = list(range(self.max_episodes))
         self._cursor = 0
         self.sampling_method = sampling_method
+        self.anchoring = anchoring
 
     def _load_episode_frames(self, episode_index: int) -> tuple[list, str]:
         ds = LeRobotDataset(self.dataset_name, episodes=[episode_index])
@@ -79,7 +81,7 @@ class HuggingFaceDataLoader(BaseDataLoader):
 
         logger.info(f"Loading episode {episode_index} from {self.dataset_name}")
         frames, instruction = self._load_episode_frames(episode_index)
-        eval_ep = self._build_episode(frames=frames, instruction=instruction, episode_index=episode_index, sampling_method=self.sampling_method)
+        eval_ep = self._build_episode(frames=frames, instruction=instruction, episode_index=episode_index, sampling_method=self.sampling_method, anchoring=self.anchoring)
         context = self._build_context(exclude_index=episode_index)
         return FewShotInput(eval_episode=eval_ep, context_episodes=context)
 
