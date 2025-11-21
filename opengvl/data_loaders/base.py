@@ -78,14 +78,15 @@ class BaseDataLoader(ABC):
             probs = np.array([1 / (total - i) for i in range(1, total)])
             probs /= probs.sum()
             frames = self._rng.choice(range(1, total), self.num_frames, replace=False, p=probs)
-        elif sampling == 'poisson':
-            lam = (self.num_frames + 1) / 2
-            frames_set = set()
-            while len(frames_set) < self.num_frames:
-                sample = int(self._rng.poisson(lam))
+        elif sampling == 'gauss':
+            mu = total / 2
+            sigma = total / 6  # ~99.7% data within [0, total]
+            frames = set()
+            while len(frames) < self.num_frames:
+                sample = int(self._rng.normal(mu, sigma))
                 if 1 <= sample < total:
-                    frames_set.add(sample)
-            frames = np.array(list(frames_set))
+                    frames.add(sample)
+            frames = np.array(list(frames))
         else:
             raise ValueError(f"Unknown sampling method: {sampling}")
         frames = np.sort(frames)
@@ -112,6 +113,7 @@ class BaseDataLoader(ABC):
         instruction: str,
         episode_index: int,
         sampling_method: str = 'random',
+        anchoring: str = 'first',
     ) -> Episode:
         """Construct an Episode from raw frames.
 
@@ -143,8 +145,15 @@ class BaseDataLoader(ABC):
             original_completion[original_indices.index(i)] for i in shuffled_indices
         ]
 
-
-        starting_frame = frames_np[original_indices[0]]
+        if anchoring == 'first':
+            starting_frame = frames_np[original_indices[0]]
+        elif anchoring == 'last':
+            starting_frame = frames_np[original_indices[-1]]
+        elif anchoring == 'middle':
+            mid_idx = original_indices[len(original_indices) // 2]
+            starting_frame = frames_np[mid_idx]
+        else:
+            raise ValueError(f"Unknown anchoring method: {anchoring}")
 
         return Episode(
             instruction=str(instruction),

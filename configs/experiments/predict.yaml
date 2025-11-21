@@ -8,20 +8,16 @@ defaults:
   - mapping_prompts: default
   - _self_
 
-# nyudoor
-#TODO: Add kimi to config 
-
 seed: 42          # Global seed (propagated to loader & any RNG-dependent logic)
 shuffle: true       # Whether to shuffle frame presentation order
-sampling_method: heavy_right_tail  # 
- # heavy_left_tail  
-# Method to sample frames from episodes ('random' or 'sequential')
+sampling_method: random  # Frame sampling method: 'random', 'uniform', 'gauss', 'heavy_left_tail', 'heavy_right_tail'
+anchoring: first   # Anchoring method for frame sampling: 'first', 'last', 'middle'
 
 dataset:
-  num_context_episodes: 0  # How many in-context episodes to provide
+  num_context_episodes: 2  # How many in-context episodes to provide
 
 prediction:
-  num_examples: 50   # How many FewShotInput predictions to perform
+  num_examples: 15   # How many FewShotInput predictions to perform
   save_raw: true    # Whether to dump raw model outputs
   output_dir: ${hydra:run.dir}
   temperature: 1 # Sampling temperature for generation
@@ -41,4 +37,4 @@ hydra:
     subdir: ${hydra.job.num}
   sweeper:
     params:
-      dataset.num_context_episodes: 0
+      dataset.num_context_episodes: 2

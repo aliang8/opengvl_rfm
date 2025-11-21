@@ -14,7 +14,7 @@ from opengvl.utils.images import to_pil
 class KimiThinkingClient(BaseModelClient):
     """Client for Kimi Thinking VL model."""
 
-    def __init__(self, model_name: str = "moonshotai/Kimi-VL-A3B-Thinking-2506", rpm: float = 0.0):
+    def __init__(self, model_name: str = "moonshotai/Kimi-VL-A3B-Thinking-2506", rpm: float = 0.0, max_input_length: int = 32768 ):
         super().__init__(rpm=rpm)
         logger.info(f"Loading Kimi Thinking model {model_name} ...")
         self.model = AutoModelForCausalLM.from_pretrained(

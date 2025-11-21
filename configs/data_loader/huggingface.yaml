@@ -7,3 +7,5 @@ num_context_episodes: ${dataset.num_context_episodes}
 shuffle: ${shuffle}
 seed: ${seed}
 max_episodes: ${dataset.max_episodes}
+sampling_method: ${sampling_method}
+anchoring: ${anchoring}

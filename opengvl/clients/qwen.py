@@ -13,7 +13,6 @@ from qwen_vl_utils import process_vision_info
 class QwenClient(BaseModelClient):
     def __init__(self, model_name: str = "Qwen/Qwen2.5-VL-3B-Instruct", rpm: float = 0.0, max_input_length: int = 32768 ):
         super().__init__(rpm=rpm)
-        logger.info(f"Loading Qwen model {model_name}...")
         self.model = Qwen2_5_VLForConditionalGeneration.from_pretrained(model_name, torch_dtype="auto", device_map="auto")
         self.processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
         logger.info(type(self.processor))

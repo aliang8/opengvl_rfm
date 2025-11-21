@@ -13,7 +13,7 @@ from opengvl.utils.images import to_pil
 class GLMClient(BaseModelClient):
     """GLM client implementation"""
 
-    def __init__(self, model_name: str = "zai-org/GLM-4.1V-9B-Thinking", rpm: float = 0.0):
+    def __init__(self, model_name: str = "zai-org/GLM-4.1V-9B-Thinking", rpm: float = 0.0, max_input_length: int = 32768 ):
         super().__init__(rpm=rpm)
         logger.info(f"Loading GLM model {model_name}...")
         self.model = Glm4vForConditionalGeneration.from_pretrained(
