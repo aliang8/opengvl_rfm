@@ -8,12 +8,26 @@ from opengvl.clients.openai import OpenAIClient
 from opengvl.clients.glm import GLMClient
 from opengvl.clients.qwen import QwenClient
 
-__all__ = [
-    "BaseModelClient",
-    "GeminiClient",
-    "GemmaClient",
-    "KimiThinkingClient",
-    "OpenAIClient",
-    "GLMClient",
-    "QwenClient",
-]
+try:
+    from opengvl.clients.rfm import RFMClient
+    __all__ = [
+        "BaseModelClient",
+        "GeminiClient",
+        "GemmaClient",
+        "KimiThinkingClient",
+        "OpenAIClient",
+        "GLMClient",
+        "QwenClient",
+        "RFMClient",
+    ]
+except ImportError:
+    # RFM client not available (missing dependencies)
+    __all__ = [
+        "BaseModelClient",
+        "GeminiClient",
+        "GemmaClient",
+        "KimiThinkingClient",
+        "OpenAIClient",
+        "GLMClient",
+        "QwenClient",
+    ]

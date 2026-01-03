@@ -1,0 +1,4 @@
+_target_: opengvl.clients.rfm.RFMClient
+model_path: "rewardfm/pref_prog_4frames_franka_balanced"  # Replace with your RFM model checkpoint path (HuggingFace repo ID or local path)
+rpm: 0.0  # Requests per minute (0.0 for no limit, RFM runs locally so no API rate limits)
+

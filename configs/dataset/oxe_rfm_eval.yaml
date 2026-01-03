@@ -1,0 +1,7 @@
+name: oxe_rfm_eval
+dataset_name: "jesbu1/oxe_rfm_eval"
+camera_index: 0
+max_episodes: 50  # Adjust based on your needs
+num_frames: 15
+num_context_episodes: 2
+

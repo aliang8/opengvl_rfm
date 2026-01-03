@@ -48,11 +48,14 @@ class HuggingFaceDataLoader(BaseDataLoader):
         self.anchoring = anchoring
 
     def _load_episode_frames(self, episode_index: int) -> tuple[list, str]:
-        ds = LeRobotDataset(self.dataset_name, episodes=[episode_index])
+        # Use pyav backend instead of torchcodec for better compatibility
+        # torchcodec can fail with empty/corrupted videos or compatibility issues
+        ds = LeRobotDataset(self.dataset_name, episodes=[episode_index], video_backend="pyav")
         camera_key = ds.meta.camera_keys[self.camera_index]
         episode_data_index = calculate_episode_data_index(ds.hf_dataset)
-        from_idx = int(episode_data_index["from"][episode_index].item())
-        to_idx = int(episode_data_index["to"][episode_index].item())
+        # When loading a single episode, episode_data_index has size 1, so use index 0
+        from_idx = int(episode_data_index["from"][0].item())
+        to_idx = int(episode_data_index["to"][0].item())
         logger.info(f'Loading episode [{episode_index}] frames from {from_idx} to {to_idx} (exclusive)')
         frames = [ds[i][camera_key] for i in range(from_idx, to_idx)]
         instruction = ds[from_idx]["task"]

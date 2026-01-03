@@ -19,7 +19,6 @@ dependencies = [
     "loguru>=0.7.3",
     "marimo>=0.14.10",
     "openai>=1.93.0",
-    "lerobot",
     "pyright>=1.1.405",
     "pytest>=8.4.1",
     "ruff>=0.12.2",
@@ -37,13 +36,19 @@ dependencies = [
     "hydra-core>=1.3.2",
     "pylint>=3.3.8",
     "qwen-vl-utils>=0.0.14",
-    "tf-keras>=2.20.1",
+    "tf-keras>=2.19.0",
+    "reward-fm",
 ]
 
 [project.optional-dependencies]
 closed = [
     "openai>=1.93.0",
     "google-genai>=1.22.0",
+]
+# LeRobot dataset format support (for conversion scripts and LeRobot dataset loaders)
+# Note: torch 2.8.0 is allowed via override-dependencies (lerobot normally requires <2.8.0)
+lerobot = [
+    "lerobot",
 ]
 
 [dependency-groups]
@@ -116,5 +121,14 @@ required-imports = []
 [tool.black]
 line-length = 160
 
+[tool.uv]
+# Override dependencies to resolve conflicts between lerobot and reward-fm
+override-dependencies = [
+    "torch==2.8.0",  # Force torch 2.8.0 even when lerobot requests <2.8.0
+    "torchvision>=0.23.0,<0.24.0",  # Ensure torchvision compatibility with torch 2.8.0
+    "tensorflow-datasets>=4.9.9",  # Use opengvl's version (reward-fm will need to adapt)
+]
+
 [tool.uv.sources]
 lerobot = { git = "https://github.com/huggingface/lerobot.git", rev = "main#a0d7627d81c57f9ca826029e581deca313e0d548" }
+reward-fm = { path = "..", editable = true }
